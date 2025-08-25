@@ -44,8 +44,17 @@ const PhotoPicker: React.FC<PhotoPickerProps> = ({
   };
 
   const openCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert(
+        "Permission needed",
+        "Camera access is required to take photos"
+      );
+      return;
+    }
+
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ["images"],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 0.8,
