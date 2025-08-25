@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: "absolute",
-    bottom: 100,
+    bottom: 45,
     right: 30,
     backgroundColor: "#007AFF",
     width: 60,
