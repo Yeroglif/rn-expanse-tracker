@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AddExpenseForm } from "../types";
+import type { AddExpenseForm } from "../types";
 
 interface FormErrors {
   amount?: string;
@@ -12,14 +12,23 @@ export const useAddExpenseForm = () => {
     amount: "",
     category: "",
     description: "",
+    photoUri: undefined,
   });
   const [errors, setErrors] = useState<FormErrors>({});
 
   const updateField = (field: keyof AddExpenseForm, value: string) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-    if (errors[field]) {
+    if (errors[field as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
+  };
+
+  const setPhoto = (uri: string) => {
+    setForm((prev) => ({ ...prev, photoUri: uri }));
+  };
+
+  const removePhoto = () => {
+    setForm((prev) => ({ ...prev, photoUri: undefined }));
   };
 
   const validateForm = (): boolean => {
@@ -42,7 +51,7 @@ export const useAddExpenseForm = () => {
   };
 
   const resetForm = () => {
-    setForm({ amount: "", category: "", description: "" });
+    setForm({ amount: "", category: "", description: "", photoUri: undefined });
     setErrors({});
   };
 
@@ -50,6 +59,8 @@ export const useAddExpenseForm = () => {
     form,
     errors,
     updateField,
+    setPhoto,
+    removePhoto,
     validateForm,
     resetForm,
   };
