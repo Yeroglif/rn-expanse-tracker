@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { useAsyncStorage } from "../hooks/useAsyncStorage";
 import type { Expense } from "../types";
+import { NotificationService } from "../services/notificationService";
 
 interface ExpenseContextType {
   expenses: Expense[];
@@ -16,6 +17,7 @@ interface ExpenseContextType {
   isLoading: boolean;
   addExpense: (expense: Expense) => void;
   deleteExpense: (id: string) => void;
+  clearStorage: () => void;
   setFilter: (category: string) => void;
 }
 
@@ -43,11 +45,29 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
   }, [expenses]);
 
   const addExpense = (expense: Expense) => {
-    setExpenses((prev) => [...prev, expense]);
+    setExpenses((prev) => {
+      const newExpenses = [...prev, expense];
+
+      const today = new Date().toDateString();
+      const todayExpenses = newExpenses.filter(
+        (e) => new Date(e.date).toDateString() === today
+      );
+      const todayTotal = todayExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+      if (todayTotal > 100) {
+        NotificationService.scheduleSpendingAlert(todayTotal);
+      }
+
+      return newExpenses;
+    });
   };
 
   const deleteExpense = (id: string) => {
     setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+  };
+
+  const clearStorage = () => {
+    setExpenses([]);
   };
 
   const setFilter = (category: string) => {
@@ -72,6 +92,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     isLoading,
     addExpense,
     deleteExpense,
+    clearStorage,
     setFilter,
   };
 
