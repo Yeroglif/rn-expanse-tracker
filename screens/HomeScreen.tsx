@@ -1,16 +1,28 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import ExpenseSummary from "../components/ExpenseSummary";
-import ExpenseList from "../components/ExpenseList";
+import ExpenseList from "../components/Home/ExpenseList";
+import ExpenseSummary from "../components/Home/ExpenseSummary";
+import ExpenseFilter from "../components/Home/ExpenseFilter";
+import { useExpenses } from "../context/ExpenseContext";
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const { setFilter } = useExpenses();
+
   return (
     <View style={styles.container}>
       <ExpenseSummary />
+      <ExpenseFilter
+        selectedCategory={selectedCategory}
+        onCategoryChange={(category) => {
+          setSelectedCategory(category);
+          setFilter(category);
+        }}
+      />
       <ExpenseList />
 
       <TouchableOpacity

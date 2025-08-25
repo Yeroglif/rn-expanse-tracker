@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { useExpenses } from "../context/ExpenseContext";
+import { useExpenses } from "../../context/ExpenseContext";
 
 const ExpenseSummary: React.FC = () => {
   const { totalExpenses, expenses } = useExpenses();

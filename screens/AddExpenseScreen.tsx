@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { useAddExpenseForm } from "../hooks/useAddExpenseForm";
 import { useExpenses } from "../context/ExpenseContext";
-import FormInput from "../components/FormInput";
-import CategoryPicker from "../components/CategoryPicker";
+import FormInput from "../components/AddExpense/FormInput";
+import CategoryPicker from "../components/AddExpense/CategoryPicker";
 import type { Expense } from "../types";
+import PhotoPicker from "../components/AddExpense/PhotoPicker";
 
 interface AddExpenseScreenProps {
   navigation: any;
@@ -20,6 +21,7 @@ interface AddExpenseScreenProps {
 const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation }) => {
   const { form, errors, updateField, validateForm, resetForm } =
     useAddExpenseForm();
+  const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
   const { addExpense } = useExpenses();
 
   const handleSubmit = () => {
@@ -31,6 +33,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation }) => {
       category: form.category,
       description: form.description,
       date: new Date(),
+      photoUri,
     };
 
     addExpense(newExpense);
@@ -66,6 +69,12 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation }) => {
           onChangeText={(text) => updateField("description", text)}
           placeholder="What did you spend on?"
           error={errors.description}
+        />
+
+        <PhotoPicker
+          photoUri={photoUri}
+          onPhotoSelected={(uri) => setPhotoUri(uri)}
+          onPhotoRemoved={() => setPhotoUri(undefined)}
         />
 
         <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>

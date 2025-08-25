@@ -1,11 +1,11 @@
 import React from "react";
 import { FlatList, Text, StyleSheet, View } from "react-native";
 import ExpenseItem from "./ExpenseItem";
-import { useExpenses } from "../context/ExpenseContext";
-import type { Expense } from "../types";
+import { useExpenses } from "../../context/ExpenseContext";
+import { Expense } from "../../types";
 
 const ExpenseList: React.FC = () => {
-  const { expenses, deleteExpense } = useExpenses();
+  const { filteredExpenses, deleteExpense } = useExpenses();
 
   const renderExpense = ({ item }: { item: Expense }) => (
     <ExpenseItem expense={item} onDelete={deleteExpense} />
@@ -22,7 +22,7 @@ const ExpenseList: React.FC = () => {
 
   return (
     <FlatList
-      data={expenses}
+      data={filteredExpenses}
       renderItem={renderExpense}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.container}
