@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useAddExpenseForm } from "../hooks/useAddExpenseForm";
+import { useExpenses } from "../context/ExpenseContext";
 import FormInput from "../components/FormInput";
 import CategoryPicker from "../components/CategoryPicker";
 import type { Expense } from "../types";
@@ -19,6 +20,7 @@ interface AddExpenseScreenProps {
 const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation }) => {
   const { form, errors, updateField, validateForm, resetForm } =
     useAddExpenseForm();
+  const { addExpense } = useExpenses();
 
   const handleSubmit = () => {
     if (!validateForm()) return;
@@ -31,7 +33,7 @@ const AddExpenseScreen: React.FC<AddExpenseScreenProps> = ({ navigation }) => {
       date: new Date(),
     };
 
-    console.log("New expense:", newExpense);
+    addExpense(newExpense);
 
     Alert.alert("Success", "Expense added successfully!", [
       { text: "OK", onPress: () => navigation.goBack() },

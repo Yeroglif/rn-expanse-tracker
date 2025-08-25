@@ -1,16 +1,21 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React from "react";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import ExpenseSummary from "../components/ExpenseSummary";
+import ExpenseList from "../components/ExpenseList";
 
-const HomeScreen = ({ navigation }: any) => {
+interface HomeScreenProps {
+  navigation: any;
+}
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>My Expances</Text>
-      <Text style={styles.placeholder}>No expenses yet</Text>
+      <ExpenseSummary />
+      <ExpenseList />
 
       <TouchableOpacity
         style={styles.addButton}
-        onPress={() => {
-          navigation.navigate("AddExpense");
-        }}
+        onPress={() => navigation.navigate("AddExpense")}
       >
         <Text style={styles.addButtonText}>+</Text>
       </TouchableOpacity>
@@ -22,17 +27,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  placeholder: {
-    textAlign: "center",
-    color: "#666",
-    marginTop: 50,
   },
   addButton: {
     position: "absolute",
@@ -44,6 +38,11 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   addButtonText: {
     color: "white",
