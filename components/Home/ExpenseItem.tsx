@@ -1,5 +1,12 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+} from "react-native";
 import { Expense } from "../../types";
 
 interface ExpenseItemProps {
@@ -33,9 +40,15 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
 
   return (
     <View style={styles.container}>
+      {expense.photoUri && (
+        <Image source={{ uri: expense.photoUri }} style={styles.photo} />
+      )}
+
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.description}>{expense.description}</Text>
+          <Text style={styles.description} numberOfLines={1}>
+            {expense.description}
+          </Text>
           <Text style={styles.amount}>${expense.amount.toFixed(2)}</Text>
         </View>
         <View style={styles.footer}>
@@ -45,6 +58,7 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
           <Text style={styles.date}>{formatDate(expense.date)}</Text>
         </View>
       </View>
+
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
         <Text style={styles.deleteButtonText}>×</Text>
       </TouchableOpacity>
@@ -57,6 +71,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     marginBottom: 12,
+    paddingStart: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
@@ -65,9 +80,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
+  photo: {
+    width: 60,
+    height: 60,
+    borderRadius: 8,
+    marginLeft: 16,
+    marginRight: 12,
+    backgroundColor: "#eee",
+  },
   content: {
     flex: 1,
-    padding: 16,
+    paddingVertical: 16,
+    paddingRight: 16,
   },
   header: {
     flexDirection: "row",
