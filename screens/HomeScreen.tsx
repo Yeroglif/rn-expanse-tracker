@@ -49,13 +49,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       />
 
       <TouchableOpacity
-        style={styles.monoButton}
-        onPress={() => navigation.navigate("AddMonobank")}
-      >
-        <Text style={styles.monoButtonText}>Mono</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate("AddExpense")}
       >
@@ -69,27 +62,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-  },
-  monoButton: {
-    position: "absolute",
-    bottom: 45,
-    left: 30,
-    backgroundColor: "#000000",
-    width: 100,
-    height: 60,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  monoButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
   addButton: {
     position: "absolute",
