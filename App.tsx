@@ -7,6 +7,7 @@ import HomeScreen from "./screens/HomeScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import SettingsScreen from "./screens/SettingScreen";
 import AddMonobankScreen from "./screens/AddMonobankScreen";
+import { Settings } from "lucide-react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -25,7 +26,7 @@ export default function App() {
                   onPress={() => navigation.navigate("Settings")}
                   style={{ marginRight: 16 }}
                 >
-                  <Text style={{ fontSize: 18 }}>⚙️</Text>
+                  <Text style={{ fontSize: 18 }}><Settings /></Text>
                 </TouchableOpacity>
               ),
             })}

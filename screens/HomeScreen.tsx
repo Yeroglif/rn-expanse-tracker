@@ -11,6 +11,7 @@ import ExpenseFilter from "../components/Home/ExpenseFilter";
 import { useExpenses } from "../context/ExpenseContext";
 import ExpenseChart from "../components/Home/ExpenseChart";
 import ExpenseItem from "../components/Home/ExpenseItem";
+import { Plus } from "lucide-react-native";
 
 interface HomeScreenProps {
   navigation: any;
@@ -64,7 +65,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         style={styles.addButton}
         onPress={() => navigation.navigate("AddExpense")}
       >
-        <Text style={styles.addButtonText}>+</Text>
+        <Text style={styles.addButtonText}><Plus color={"white"} strokeWidth={5}/></Text>
       </TouchableOpacity>
     </View>
   );

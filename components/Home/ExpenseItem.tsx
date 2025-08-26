@@ -10,6 +10,7 @@ import {
 import { Picker } from "@react-native-picker/picker";
 import { Expense } from "../../types";
 import { CATEGORIES } from "../../types";
+import { X } from "lucide-react-native";
 
 interface ExpenseItemProps {
   expense: Expense;
@@ -92,7 +93,9 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({
       </View>
 
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-        <Text style={styles.deleteButtonText}>×</Text>
+        <Text style={styles.deleteButtonText}>
+          <X color={"white"} strokeWidth={3} />
+        </Text>
       </TouchableOpacity>
     </View>
   );

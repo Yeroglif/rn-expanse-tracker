@@ -132,7 +132,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         <Text style={styles.sectionTitle}>Data</Text>
 
         <TouchableOpacity style={styles.dangerButton} onPress={clearAllData}>
-          <Text style={styles.dangerButtonText}>🗑️ Clear All Data</Text>
+          <Text style={styles.dangerButtonText}>Clear All Data</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
