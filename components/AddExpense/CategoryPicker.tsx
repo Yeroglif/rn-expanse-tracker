@@ -6,16 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-
-const CATEGORIES = [
-  "Food",
-  "Transport",
-  "Entertainment",
-  "Bills",
-  "Shopping",
-  "Health",
-  "Other",
-];
+import { CATEGORIES } from "../../types";
 
 interface CategoryPickerProps {
   selectedCategory: string;

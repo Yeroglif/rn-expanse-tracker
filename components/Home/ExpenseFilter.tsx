@@ -6,17 +6,9 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
+import { CATEGORIES } from "../../types";
 
-const CATEGORIES = [
-  "All",
-  "Food",
-  "Transport",
-  "Entertainment",
-  "Bills",
-  "Shopping",
-  "Health",
-  "Other",
-];
+const FilterCategories = ["All", ...CATEGORIES];
 
 interface ExpenseFilterProps {
   selectedCategory: string;
@@ -35,7 +27,7 @@ const ExpenseFilter: React.FC<ExpenseFilterProps> = ({
         showsHorizontalScrollIndicator={false}
         style={styles.scrollView}
       >
-        {CATEGORIES.map((category) => (
+        {FilterCategories.map((category) => (
           <TouchableOpacity
             key={category}
             style={[
