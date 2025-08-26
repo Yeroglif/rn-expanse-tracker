@@ -6,6 +6,7 @@ import { ExpenseProvider } from "./context/ExpenseContext";
 import HomeScreen from "./screens/HomeScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import SettingsScreen from "./screens/SettingScreen";
+import AddMonobankScreen from "./screens/AddMonobankScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +34,11 @@ export default function App() {
             name="AddExpense"
             component={AddExpenseScreen}
             options={{ title: "Add Expense" }}
+          />
+          <Stack.Screen
+            name="AddMonobank"
+            component={AddMonobankScreen}
+            options={{ title: "Add Monobank" }}
           />
           <Stack.Screen
             name="Settings"
