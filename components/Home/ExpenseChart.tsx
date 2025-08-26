@@ -27,10 +27,21 @@ const ExpenseChart: React.FC = () => {
     text: category,
   }));
 
+  const chartData =
+    data.length > 0
+      ? data
+      : [
+          {
+            value: 1,
+            color: "#eee",
+            text: "No data",
+          },
+        ];
+
   return (
     <View style={styles.container}>
       <PieChart
-        data={data}
+        data={chartData}
         donut
         showText
         textColor="black"
