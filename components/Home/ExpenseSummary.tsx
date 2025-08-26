@@ -9,7 +9,7 @@ const ExpenseSummary: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.summaryCard}>
         <Text style={styles.label}>Total Expenses</Text>
-        <Text style={styles.amount}>${totalExpenses.toFixed(2)}</Text>
+        <Text style={styles.amount}>₴{totalExpenses.toFixed(2)}</Text>
       </View>
       <View style={styles.countCard}>
         <Text style={styles.countLabel}>Transactions</Text>

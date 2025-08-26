@@ -49,7 +49,7 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
           <Text style={styles.description} numberOfLines={1}>
             {expense.description}
           </Text>
-          <Text style={styles.amount}>${expense.amount.toFixed(2)}</Text>
+          <Text style={styles.amount}>₴{expense.amount.toFixed(2)}</Text>
         </View>
         <View style={styles.footer}>
           <View style={styles.categoryContainer}>

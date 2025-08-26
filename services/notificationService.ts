@@ -79,7 +79,7 @@ export class NotificationService {
       ? `High ${category} Spending!`
       : "High Spending Alert!";
 
-    const body = `You've spent $${amount.toFixed(2)} ${
+    const body = `You've spent ₴${amount.toFixed(2)} ${
       category ? `on ${category}` : "today"
     }. Consider reviewing your budget.`;
 
