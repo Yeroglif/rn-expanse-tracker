@@ -29,13 +29,22 @@ const ExpenseChart: React.FC = () => {
     text: category,
   }));
 
-  const chartData = data.map((item) => ({
-    value: item.value,
-    color: item.color,
-    text: item.text,
-    shiftX: selectedCategory === item.text ? 2 : 0,
-    shiftY: selectedCategory === item.text ? 8 : 0,
-  }));
+  const chartData =
+    data.length > 0
+      ? data.map((item) => ({
+          value: item.value,
+          color: item.color,
+          text: item.text,
+          shiftX: selectedCategory === item.text ? 2 : 0,
+          shiftY: selectedCategory === item.text ? 8 : 0,
+        }))
+      : [
+          {
+            value: 1,
+            color: "#eee",
+            text: "No data",
+          },
+        ];
 
   return (
     <View style={styles.container}>

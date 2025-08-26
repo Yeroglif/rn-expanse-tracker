@@ -30,7 +30,7 @@ export const fetchMonobankAccounts = async (token: string) => {
   });
   if (!res.ok) throw new Error("Failed to fetch accounts");
   const data = await res.json();
-  return data.accounts.filter((acc: any) => acc.type === "black");
+  return data.accounts.filter((acc: any) => ["black", "white"].includes(acc.type));
 };
 
 export const fetchMonobankTransactions = async (
