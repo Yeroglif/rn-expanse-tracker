@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,14 +7,24 @@ import {
   Alert,
   Image,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 import { Expense } from "../../types";
+import { CATEGORIES } from "../../types";
 
 interface ExpenseItemProps {
   expense: Expense;
   onDelete: (id: string) => void;
+  onCategoryChange: (id: string, category: string) => void;
 }
 
-const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
+const ExpenseItem: React.FC<ExpenseItemProps> = ({
+  expense,
+  onDelete,
+  onCategoryChange,
+}) => {
+  const [isPickerVisible, setPickerVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(expense.category);
+
   const handleDelete = () => {
     Alert.alert(
       "Delete Expense",
@@ -30,12 +40,17 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
     );
   };
 
-  const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString("en-US", {
+  const formatDate = (date: Date) =>
+    new Date(date).toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    onCategoryChange(expense.id, category);
+    setPickerVisible(false);
   };
 
   return (
@@ -51,12 +66,29 @@ const ExpenseItem: React.FC<ExpenseItemProps> = ({ expense, onDelete }) => {
           </Text>
           <Text style={styles.amount}>₴{expense.amount.toFixed(2)}</Text>
         </View>
+
         <View style={styles.footer}>
-          <View style={styles.categoryContainer}>
-            <Text style={styles.category}>{expense.category}</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.categoryContainer}
+            onPress={() => setPickerVisible((prev) => !prev)}
+          >
+            <Text style={styles.category}>{selectedCategory}</Text>
+          </TouchableOpacity>
+
           <Text style={styles.date}>{formatDate(expense.date)}</Text>
         </View>
+
+        {isPickerVisible && (
+          <Picker
+            selectedValue={selectedCategory}
+            onValueChange={(itemValue) => handleCategoryChange(itemValue)}
+            style={styles.picker}
+          >
+            {CATEGORIES.map((cat) => (
+              <Picker.Item key={cat} label={cat} value={cat} />
+            ))}
+          </Picker>
+        )}
       </View>
 
       <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
@@ -125,6 +157,14 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     fontWeight: "500",
+  },
+  picker: {
+    marginTop: 4,
+    width: 150,
+    borderRadius: 100,
+    color: "white",
+    padding: 3,
+    backgroundColor: "#007AFF",
   },
   date: {
     fontSize: 12,

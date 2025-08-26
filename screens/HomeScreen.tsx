@@ -18,7 +18,8 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { filteredExpenses, setFilter, deleteExpense } = useExpenses();
+  const { filteredExpenses, setFilter, deleteExpense, updateExpenseCategory } =
+    useExpenses();
 
   return (
     <View style={styles.container}>
@@ -26,7 +27,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         data={filteredExpenses}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <ExpenseItem expense={item} onDelete={deleteExpense} />
+          <ExpenseItem
+            expense={item}
+            onDelete={deleteExpense}
+            onCategoryChange={updateExpenseCategory}
+          />
         )}
         ListHeaderComponent={
           <View>

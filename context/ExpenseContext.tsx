@@ -20,6 +20,7 @@ interface ExpenseContextType {
   deleteExpense: (id: string) => void;
   clearStorage: () => void;
   setFilter: (category: string) => void;
+  updateExpenseCategory: (id: string, category: string) => void;
 }
 
 const ExpenseContext = createContext<ExpenseContextType | null>(null);
@@ -79,6 +80,14 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     setSelectedCategory(category);
   };
 
+  const updateExpenseCategory = (id: string, category: string) => {
+    setExpenses((prev) =>
+      prev.map((expense) =>
+        expense.id === id ? { ...expense, category } : expense
+      )
+    );
+  };
+
   const filteredExpenses =
     selectedCategory === "All"
       ? expenses
@@ -99,6 +108,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     deleteExpense,
     clearStorage,
     setFilter,
+    updateExpenseCategory,
   };
 
   return (
