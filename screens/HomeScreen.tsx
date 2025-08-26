@@ -18,12 +18,12 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { expenses, setFilter, deleteExpense } = useExpenses();
+  const { filteredExpenses, setFilter, deleteExpense } = useExpenses();
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={expenses}
+        data={filteredExpenses}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <ExpenseItem expense={item} onDelete={deleteExpense} />
