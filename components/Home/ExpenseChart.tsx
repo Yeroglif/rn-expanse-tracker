@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { PieChart } from "react-native-gifted-charts";
+import { SetStateAction, useState } from "react";
 import { useExpenses } from "../../context/ExpenseContext";
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -13,7 +14,8 @@ const CATEGORY_COLORS: Record<string, string> = {
 };
 
 const ExpenseChart: React.FC = () => {
-  const { expenses } = useExpenses();
+  const { expenses, totalExpenses } = useExpenses();
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const categoryTotals: Record<string, number> = {};
   expenses.forEach((expense) => {
@@ -27,28 +29,30 @@ const ExpenseChart: React.FC = () => {
     text: category,
   }));
 
-  const chartData =
-    data.length > 0
-      ? data
-      : [
-          {
-            value: 1,
-            color: "#eee",
-            text: "No data",
-          },
-        ];
+  const chartData = data.map((item) => ({
+    value: item.value,
+    color: item.color,
+    text: item.text,
+    shiftX: selectedCategory === item.text ? 2 : 0,
+    shiftY: selectedCategory === item.text ? 8 : 0,
+  }));
 
   return (
     <View style={styles.container}>
       <PieChart
         data={chartData}
-        donut
-        showText
+        semiCircle
         textColor="black"
         textSize={12}
-        radius={120}
+        radius={190}
         innerRadius={0}
-        focusOnPress
+        onPress={(item: any) => {
+          if (item?.text) {
+            setSelectedCategory((prev) =>
+              prev === item.text ? null : item.text
+            );
+          }
+        }}
       />
 
       <View style={{ marginTop: 20 }}>
@@ -65,8 +69,14 @@ const ExpenseChart: React.FC = () => {
                 marginRight: 8,
               }}
             />
-            <Text>
-              {item.text}: {item.value.toFixed(2)}
+            <Text
+              style={{
+                textDecorationLine:
+                  selectedCategory === item.text ? "underline" : "none",
+              }}
+            >
+              {item.text}: {item.value.toFixed(2)} (
+              {((item.value / totalExpenses) * 100).toFixed(2)}%)
             </Text>
           </View>
         ))}
