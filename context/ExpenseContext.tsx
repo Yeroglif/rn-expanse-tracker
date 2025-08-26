@@ -100,7 +100,11 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const deleteExpense = (id: string) => {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id));
+    setExpenses((prev) => {
+      const newExpenses = prev.filter((expense) => expense.id !== id);
+      currentExpensesIds.current.delete(id);
+      return newExpenses;
+    });
   };
 
   const clearStorage = () => {
