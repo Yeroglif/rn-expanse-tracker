@@ -21,13 +21,11 @@ const AddMonobankScreen: React.FC<AddMonobankScreenProps> = ({
   navigation,
 }) => {
   const [monoToken, setMonoToken] = useState<string>("");
-  const { addExpense } = useExpenses();
+  const { addExpenses } = useExpenses();
 
   const handleSubmit = async () => {
     const newExpenses: Expense[] = await fetchMonobankTransactions(monoToken);
-    newExpenses.map((expense) => {
-      addExpense(expense);
-    });
+    addExpenses(newExpenses);
 
     Alert.alert("Success", "Expense added successfully!", [
       { text: "OK", onPress: () => navigation.goBack() },

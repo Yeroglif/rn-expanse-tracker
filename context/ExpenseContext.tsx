@@ -17,6 +17,7 @@ interface ExpenseContextType {
   selectedCategory: string;
   isLoading: boolean;
   addExpense: (expense: Expense) => void;
+  addExpenses: (expenses: Expense[]) => void;
   deleteExpense: (id: string) => void;
   clearStorage: () => void;
   setFilter: (category: string) => void;
@@ -30,7 +31,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { isLoading, saveExpenses, loadExpenses } = useAsyncStorage();
+  const { isLoading, saveExpenses, loadExpenses, clearStorage: clearAsyncStorage } = useAsyncStorage();
   const currentExpensesIds = useRef(new Set(expenses.map((e) => e.id)));
 
   useEffect(() => {
@@ -68,12 +69,38 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     currentExpensesIds.current.add(expense.id);
   };
 
+  const addExpenses = (expensesToAdd: Expense[]) => {
+    const uniqueExpenses = expensesToAdd.filter(
+      (e) => !currentExpensesIds.current.has(e.id)
+    );
+    if (uniqueExpenses.length === 0) return;
+
+    setExpenses((prev) => {
+      const newExpenses = [...prev, ...uniqueExpenses];
+
+      const today = new Date().toDateString();
+      const todayExpenses = newExpenses.filter(
+        (e) => new Date(e.date).toDateString() === today
+      );
+      const todayTotal = todayExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+      if (todayTotal > 100) {
+        NotificationService.scheduleSpendingAlert(todayTotal);
+      }
+
+      return newExpenses;
+    });
+
+    uniqueExpenses.forEach((e) => currentExpensesIds.current.add(e.id));
+  };
+
   const deleteExpense = (id: string) => {
     setExpenses((prev) => prev.filter((expense) => expense.id !== id));
   };
 
   const clearStorage = () => {
     setExpenses([]);
+    clearAsyncStorage()
   };
 
   const setFilter = (category: string) => {
@@ -105,6 +132,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     selectedCategory,
     isLoading,
     addExpense,
+    addExpenses,
     deleteExpense,
     clearStorage,
     setFilter,
