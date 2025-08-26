@@ -4,6 +4,7 @@ import React, {
   useState,
   ReactNode,
   useEffect,
+  useRef,
 } from "react";
 import { useAsyncStorage } from "../hooks/useAsyncStorage";
 import type { Expense } from "../types";
@@ -29,11 +30,13 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { isLoading, saveExpenses, loadExpenses } = useAsyncStorage();
+  const currentExpensesIds = useRef(new Set(expenses.map((e) => e.id)));
 
   useEffect(() => {
     const initializeData = async () => {
       const loadedExpenses = await loadExpenses();
       setExpenses(loadedExpenses);
+      currentExpensesIds.current = new Set(loadedExpenses.map((e) => e.id));
     };
     initializeData();
   }, []);
@@ -45,6 +48,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
   }, [expenses]);
 
   const addExpense = (expense: Expense) => {
+    if (currentExpensesIds.current.has(expense.id)) return;
     setExpenses((prev) => {
       const newExpenses = [...prev, expense];
 
@@ -60,6 +64,7 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
 
       return newExpenses;
     });
+    currentExpensesIds.current.add(expense.id);
   };
 
   const deleteExpense = (id: string) => {
