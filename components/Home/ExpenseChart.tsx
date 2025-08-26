@@ -55,7 +55,7 @@ const ExpenseChart: React.FC = () => {
               }}
             />
             <Text>
-              {item.text}: {item.value}
+              {item.text}: {item.value.toFixed(2)}
             </Text>
           </View>
         ))}
