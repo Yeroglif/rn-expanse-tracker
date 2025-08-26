@@ -58,13 +58,22 @@ export const fetchMonobankTransactions = async (
   if (!response.ok) throw new Error(`Monobank API error: ${response.status}`);
 
   const data = await response.json();
-  console.log(data)
 
-  return data.map((tx: any) => ({
-    id: tx.id.toString(),
-    amount: Math.abs(tx.amount / 100),
-    category: mapMccToCategory(tx.mcc),
-    description: tx.description,
-    date: new Date(tx.time * 1000),
-  }));
+  return data
+    .filter((tx: { amount: number }) => tx.amount < 0)
+    .map(
+      (tx: {
+        id: { toString: () => any };
+        amount: number;
+        mcc: number;
+        description: any;
+        time: number;
+      }) => ({
+        id: tx.id.toString(),
+        amount: Math.abs(tx.amount / 100),
+        category: mapMccToCategory(tx.mcc),
+        description: tx.description,
+        date: new Date(tx.time * 1000),
+      })
+    );
 };
