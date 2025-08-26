@@ -4,6 +4,7 @@ import ExpenseList from "../components/Home/ExpenseList";
 import ExpenseSummary from "../components/Home/ExpenseSummary";
 import ExpenseFilter from "../components/Home/ExpenseFilter";
 import { useExpenses } from "../context/ExpenseContext";
+import ExpenseChart from "../components/Home/ExpenseChart";
 
 interface HomeScreenProps {
   navigation: any;
@@ -15,14 +16,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <ExpenseSummary />
-      <ExpenseFilter
-        selectedCategory={selectedCategory}
-        onCategoryChange={(category) => {
-          setSelectedCategory(category);
-          setFilter(category);
-        }}
-      />
+      <View style={{ marginBottom: 75 }}>
+        <ExpenseSummary />
+      </View>
+      <ExpenseChart />
+      <View style={{ marginTop: 30 }}>
+        <ExpenseFilter
+          selectedCategory={selectedCategory}
+          onCategoryChange={(category) => {
+            setSelectedCategory(category);
+            setFilter(category);
+          }}
+        />
+      </View>
       <ExpenseList />
 
       <TouchableOpacity
@@ -39,7 +45,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    gap: 20
+    gap: 20,
   },
   addButton: {
     position: "absolute",

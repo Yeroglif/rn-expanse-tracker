@@ -29,3 +29,13 @@ export interface ExpenseFilters {
     end: Date;
   };
 }
+
+export const CATEGORIES = [
+  "Food",
+  "Transport",
+  "Entertainment",
+  "Bills",
+  "Shopping",
+  "Health",
+  "Other",
+];
