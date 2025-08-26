@@ -31,7 +31,12 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const { isLoading, saveExpenses, loadExpenses, clearStorage: clearAsyncStorage } = useAsyncStorage();
+  const {
+    isLoading,
+    saveExpenses,
+    loadExpenses,
+    clearStorage: clearAsyncStorage,
+  } = useAsyncStorage();
   const currentExpensesIds = useRef(new Set(expenses.map((e) => e.id)));
 
   useEffect(() => {
@@ -100,7 +105,8 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
 
   const clearStorage = () => {
     setExpenses([]);
-    clearAsyncStorage()
+    currentExpensesIds.current = new Set();
+    clearAsyncStorage();
   };
 
   const setFilter = (category: string) => {

@@ -24,12 +24,18 @@ const AddMonobankScreen: React.FC<AddMonobankScreenProps> = ({
   const { addExpenses } = useExpenses();
 
   const handleSubmit = async () => {
-    const newExpenses: Expense[] = await fetchMonobankTransactions(monoToken);
-    addExpenses(newExpenses);
+    try {
+      const newExpenses: Expense[] = await fetchMonobankTransactions(monoToken);
+      addExpenses(newExpenses);
 
-    Alert.alert("Success", "Expense added successfully!", [
-      { text: "OK", onPress: () => navigation.goBack() },
-    ]);
+      Alert.alert("Success", "Expense added successfully!", [
+        { text: "OK", onPress: () => navigation.goBack() },
+      ]);
+    } catch {
+      Alert.alert("Error", "Can't add expenses!", [
+        { text: "OK", onPress: () => navigation.goBack() },
+      ]);
+    }
   };
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps="handled">
