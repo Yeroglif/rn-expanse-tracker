@@ -189,4 +189,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExpenseItem;
+export default React.memo(ExpenseItem, (prevProps, nextProps) => {
+  return (
+    prevProps.expense === nextProps.expense &&
+    prevProps.onDelete === nextProps.onDelete &&
+    prevProps.onCategoryChange === nextProps.onCategoryChange
+  );
+});
