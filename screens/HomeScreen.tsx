@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   StyleSheet,
@@ -7,19 +7,18 @@ import {
   FlatList,
 } from "react-native";
 import ExpenseSummary from "../components/Home/ExpenseSummary";
-import ExpenseFilter from "../components/Home/ExpenseFilter";
 import { useExpenses } from "../context/ExpenseContext";
 import ExpenseChart from "../components/Home/ExpenseChart";
 import ExpenseItem from "../components/Home/ExpenseItem";
 import { Plus } from "lucide-react-native";
+import ExpenseFilter from "../components/Home/ExpenseFilter";
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const { filteredExpenses, setFilter, deleteExpense, updateExpenseCategory } =
+  const { filteredExpenses, deleteExpense, updateExpenseCategory } =
     useExpenses();
 
   return (
@@ -41,31 +40,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </View>
             <ExpenseChart />
             <View style={{ marginTop: 30 }}>
-              <ExpenseFilter
-                selectedCategory={selectedCategory}
-                onCategoryChange={(category) => {
-                  setSelectedCategory(category);
-                  setFilter(category);
-                }}
-              />
+              <ExpenseFilter />
             </View>
           </View>
         }
         contentContainerStyle={{ paddingBottom: 120 }}
+        showsVerticalScrollIndicator={false}
       />
 
       <TouchableOpacity
         style={styles.monoButton}
         onPress={() => navigation.navigate("AddMonobank")}
       >
-        <Text style={styles.addButtonText}>Mono</Text>
+        <Text style={styles.monoButtonText}>Mono</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.addButton}
         onPress={() => navigation.navigate("AddExpense")}
       >
-        <Text style={styles.addButtonText}><Plus color={"white"} strokeWidth={5}/></Text>
+        <Plus color={"white"} strokeWidth={3} size={24} />
       </TouchableOpacity>
     </View>
   );
@@ -83,6 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000000",
     width: 100,
     height: 60,
+    borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -90,6 +85,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+  },
+  monoButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   addButton: {
     position: "absolute",
@@ -106,11 +106,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 30,
-    fontWeight: "bold",
   },
 });
 

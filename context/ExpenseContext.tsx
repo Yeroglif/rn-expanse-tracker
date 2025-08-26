@@ -5,23 +5,26 @@ import React, {
   ReactNode,
   useEffect,
   useRef,
+  useMemo,
 } from "react";
 import { useAsyncStorage } from "../hooks/useAsyncStorage";
-import type { Expense } from "../types";
+import type { Expense, ExpenseFilters } from "../types";
 import { NotificationService } from "../services/notificationService";
 
 interface ExpenseContextType {
   expenses: Expense[];
   filteredExpenses: Expense[];
   totalExpenses: number;
-  selectedCategory: string;
+  filters: ExpenseFilters;
   isLoading: boolean;
   addExpense: (expense: Expense) => void;
   addExpenses: (expenses: Expense[]) => void;
   deleteExpense: (id: string) => void;
   clearStorage: () => void;
-  setFilter: (category: string) => void;
+  setFilters: (filters: ExpenseFilters) => void;
   updateExpenseCategory: (id: string, category: string) => void;
+  selectedCategory: string;
+  setFilter: (category: string) => void;
 }
 
 const ExpenseContext = createContext<ExpenseContextType | null>(null);
@@ -30,7 +33,10 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [filters, setFilters] = useState<ExpenseFilters>({
+    type: "all",
+  });
+
   const {
     isLoading,
     saveExpenses,
@@ -52,6 +58,48 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     if (expenses.length > 0) {
       saveExpenses(expenses);
     }
+  }, [expenses]);
+
+  const filteredExpenses = useMemo(() => {
+    let filtered = [...expenses];
+    if (filters.category) {
+      filtered = filtered.filter(
+        (expense) => expense.category === filters.category
+      );
+    }
+    if (filters.dateRange) {
+      filtered = filtered.filter((expense) => {
+        const expenseDate = new Date(expense.date);
+        return (
+          expenseDate >= filters.dateRange!.start &&
+          expenseDate <= filters.dateRange!.end
+        );
+      });
+    }
+    if (filters.searchText) {
+      const searchLower = filters.searchText.toLowerCase();
+      filtered = filtered.filter(
+        (expense) =>
+          expense.description.toLowerCase().includes(searchLower) ||
+          expense.category.toLowerCase().includes(searchLower)
+      );
+    }
+    if (filters.amountRange) {
+      filtered = filtered.filter(
+        (expense) =>
+          expense.amount >= filters.amountRange!.min &&
+          expense.amount <= filters.amountRange!.max
+      );
+    }
+    filtered.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+
+    return filtered;
+  }, [expenses, filters]);
+
+  const totalExpenses = useMemo(() => {
+    return expenses.reduce((sum, expense) => sum + expense.amount, 0);
   }, [expenses]);
 
   const addExpense = (expense: Expense) => {
@@ -113,8 +161,8 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     clearAsyncStorage();
   };
 
-  const setFilter = (category: string) => {
-    setSelectedCategory(category);
+  const setFiltersHandler = (newFilters: ExpenseFilters) => {
+    setFilters(newFilters);
   };
 
   const updateExpenseCategory = (id: string, category: string) => {
@@ -125,28 +173,29 @@ export const ExpenseProvider: React.FC<{ children: ReactNode }> = ({
     );
   };
 
-  const filteredExpenses =
-    selectedCategory === "All"
-      ? expenses
-      : expenses.filter((expense) => expense.category === selectedCategory);
+  const selectedCategory = filters.category || "All";
 
-  const totalExpenses = filteredExpenses.reduce(
-    (sum, expense) => sum + expense.amount,
-    0
-  );
+  const setFilter = (category: string) => {
+    setFilters({
+      type: category === "All" ? "all" : "category",
+      category: category === "All" ? undefined : category,
+    });
+  };
 
   const value: ExpenseContextType = {
     expenses,
     filteredExpenses,
     totalExpenses,
-    selectedCategory,
+    filters,
     isLoading,
     addExpense,
     addExpenses,
     deleteExpense,
     clearStorage,
-    setFilter,
+    setFilters: setFiltersHandler,
     updateExpenseCategory,
+    selectedCategory,
+    setFilter,
   };
 
   return (

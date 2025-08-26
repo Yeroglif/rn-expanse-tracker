@@ -28,6 +28,11 @@ export interface ExpenseFilters {
     start: Date;
     end: Date;
   };
+  amountRange?: {
+    min: number;
+    max: number;
+  };
+  searchText?: string;
 }
 
 export const CATEGORIES = [
