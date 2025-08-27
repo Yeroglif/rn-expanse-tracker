@@ -30,50 +30,71 @@ export const fetchMonobankAccounts = async (token: string) => {
   });
   if (!res.ok) throw new Error("Failed to fetch accounts");
   const data = await res.json();
-  return data.accounts.filter((acc: any) => ["black", "white"].includes(acc.type));
+  return data.accounts.filter((acc: any) => !["fop"].includes(acc.type));
 };
 
 export const fetchMonobankTransactions = async (
   token: string
 ): Promise<Expense[]> => {
   const now = Date.now();
-  const threeMonthsAgo = now - 30 * 24 * 60 * 60 * 1000;
+  const monthAgo = now - 30 * 24 * 60 * 60 * 1000;
 
   const accounts = await fetchMonobankAccounts(token);
   if (accounts.length === 0)
     throw new Error("No card accounts found for this user");
 
-  const accountId = accounts[0].id;
+  const allTransactions: Expense[] = [];
 
-  const response = await fetch(
-    `https://api.monobank.ua/personal/statement/${accountId}/${Math.floor(
-      threeMonthsAgo / 1000
-    )}/${Math.floor(now / 1000)}`,
-    {
-      method: "GET",
-      headers: { "X-Token": token },
+  for (const account of accounts) {
+    const accountId = account.id;
+
+    try {
+      const response = await fetch(
+        `https://api.monobank.ua/personal/statement/${accountId}/${Math.floor(
+          monthAgo / 1000
+        )}/${Math.floor(now / 1000)}`,
+        {
+          method: "GET",
+          headers: { "X-Token": token },
+        }
+      );
+
+      if (!response.ok) {
+        console.warn(
+          `Failed to fetch transactions for account ${accountId}: ${response.status}`
+        );
+        continue;
+      }
+
+      const data = await response.json();
+
+      const accountExpenses: Expense[] = data
+        .filter((tx: { amount: number }) => tx.amount < 0)
+        .map(
+          (tx: {
+            id: { toString: () => any };
+            amount: number;
+            mcc: number;
+            description: any;
+            time: number;
+          }) => ({
+            id: tx.id.toString(),
+            amount: Math.abs(tx.amount / 100),
+            category: mapMccToCategory(tx.mcc),
+            description: tx.description,
+            date: new Date(tx.time * 1000),
+          })
+        );
+
+      allTransactions.push(...accountExpenses);
+    } catch (err) {
+      console.error(
+        `Error fetching transactions for account ${accountId}:`,
+        err
+      );
+      continue;
     }
-  );
+  }
 
-  if (!response.ok) throw new Error(`Monobank API error: ${response.status}`);
-
-  const data = await response.json();
-
-  return data
-    .filter((tx: { amount: number }) => tx.amount < 0)
-    .map(
-      (tx: {
-        id: { toString: () => any };
-        amount: number;
-        mcc: number;
-        description: any;
-        time: number;
-      }) => ({
-        id: tx.id.toString(),
-        amount: Math.abs(tx.amount / 100),
-        category: mapMccToCategory(tx.mcc),
-        description: tx.description,
-        date: new Date(tx.time * 1000),
-      })
-    );
+  return allTransactions;
 };
