@@ -10,16 +10,22 @@ import ExpenseSummary from "../components/Home/ExpenseSummary";
 import { useExpenses } from "../context/ExpenseContext";
 import ExpenseChart from "../components/Home/ExpenseChart";
 import ExpenseItem from "../components/Home/ExpenseItem";
-import { Plus } from "lucide-react-native";
+import { Plus, Share } from "lucide-react-native";
 import ExpenseFilter from "../components/Home/ExpenseFilter";
+import { generateExpensePdf, shareFile } from "../services/pdfService";
 
 interface HomeScreenProps {
   navigation: any;
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { filteredExpenses, deleteExpense, updateExpenseCategory } =
+  const { expenses, filteredExpenses, deleteExpense, updateExpenseCategory } =
     useExpenses();
+
+  const shareExpensesPdf = async () => {
+    const uri = await generateExpensePdf(expenses);
+    shareFile(uri);
+  };
 
   return (
     <View style={styles.container}>
@@ -54,6 +60,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       >
         <Plus color={"white"} strokeWidth={3} size={24} />
       </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.addButton, styles.shareButton]}
+        onPress={() => shareExpensesPdf()}
+      >
+        <Share size={24} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -78,6 +90,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+  },
+  shareButton: {
+    left: 30,
+    right: 100,
   },
 });
 

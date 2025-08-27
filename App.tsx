@@ -7,7 +7,7 @@ import HomeScreen from "./screens/HomeScreen";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import SettingsScreen from "./screens/SettingScreen";
 import AddMonobankScreen from "./screens/AddMonobankScreen";
-import { Settings, Upload } from "lucide-react-native";
+import { CloudDownload, Settings, Upload } from "lucide-react-native";
 
 const Stack = createNativeStackNavigator();
 
@@ -28,7 +28,7 @@ export default function App() {
                     style={{ marginRight: 16 }}
                   >
                     <Text style={{ fontSize: 18, color: "white" }}>
-                      <Upload />
+                      <CloudDownload />
                     </Text>
                   </TouchableOpacity>
                 );
